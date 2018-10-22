@@ -43,7 +43,7 @@
 	<!-- For apigee.options, refer to "Advanced Configuration Options" under https://github.com/apigee/apigee-deploy-maven-plugin#pom-xml-sample -->
 	<profiles>
 		<profile>
-			<id>test</id>
+			<id>lab</id>
 			<properties>
 				<apigee.profile>lab</apigee.profile>
 				<apigee.env>lab</apigee.env>
