@@ -10,14 +10,8 @@
                 "port" : 80
               }
           ],
-          "resourcefiles":[
-              {
-                "name": "lab",
-                "type": "jsc",
-                "file": "./resourceFiles/jsc/test.js"
-              }    
-          ],
-          "kvms": [
+        
+   "kvms": [
             {
                 "name": "spikeArrestLimitMap",
                 "entry": [
