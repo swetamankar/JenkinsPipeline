@@ -6,7 +6,7 @@
               {
                 "name" : "mock",
                 "host" : "amer-poc12-test",
-                "isEnabled" : true,
+                "isEnabled" : false,
                 "port" : 80
               }
           ],
