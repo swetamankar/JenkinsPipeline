@@ -2,11 +2,11 @@
     "version": "1.0",
     "envConfig": {
         "lab": {
-          "targetServers": [
+          "targetservers": [
               {
                 "name" : "mock",
                 "host" : "weather.yahooapis.com",
-                "isEnabled" : false,
+                "isEnabled" : true,
                 "port" : 80
               }
           ],
