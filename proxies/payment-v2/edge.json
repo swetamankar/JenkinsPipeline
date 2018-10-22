@@ -5,7 +5,7 @@
           "targetServers": [
               {
                 "name" : "mock",
-                "host" : "amer-poc12-test",
+                "host" : "weather.yahooapis.com",
                 "isEnabled" : false,
                 "port" : 80
               }
