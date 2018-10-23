@@ -12,8 +12,7 @@
 	<version>1.0</version>
 	<name>payment-v2</name>
 	<packaging>pom</packaging>
-	
-	<pluginRepositories>
+    <pluginRepositories>
         <pluginRepository>
             <id>central</id>
             <name>Maven Plugin Repository</name>
@@ -27,98 +26,25 @@
             </releases>
         </pluginRepository>
     </pluginRepositories>
-	
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<org.slf4j.simpleLogger.defaultLogLevel>info</org.slf4j.simpleLogger.defaultLogLevel>
-		<project.root.dir>${basedir}</project.root.dir>
-		<target.root.dir>${basedir}/target</target.root.dir>
-		<deployment.suffix>${user.name}</deployment.suffix>
-		<commit></commit>
-		<branch>a local</branch>
-	</properties>
-
-	<!-- This is where you add the environment specific properties under various profile names -->
-	<!-- For apigee.options, refer to "Advanced Configuration Options" under https://github.com/apigee/apigee-deploy-maven-plugin#pom-xml-sample -->
-	<profiles>
-		<profile>
-			<id>lab</id>
-			<properties>
-				<org>fiserv</org>
-				<options>validate</options>
-				<apigee.profile>lab</apigee.profile>
-				<apigee.env>lab</apigee.env>
-				<apigee.hosturl>${hosturl}</apigee.hosturl>
-				<apigee.apiversion>v1</apigee.apiversion>
-				<apigee.org>${org}</apigee.org>
-				<apigee.username>${username}</apigee.username>
-				<apigee.password>${password}</apigee.password>
-				 <apigee.options>${options}</apigee.options>
-				</properties>
-		</profile>
-		<profile>
-			<id>prod</id>
-			<properties>
-				<apigee.profile>prod</apigee.profile>
-				<apigee.env>prod</apigee.env>
-				<apigee.hosturl>https://api.enterprise.apigee.com</apigee.hosturl>
-				<apigee.apiversion>v1</apigee.apiversion>
-				<apigee.org>${org}</apigee.org>
-				<apigee.username>${username}</apigee.username>
-				<apigee.password>${password}</apigee.password>
-				<apigee.options>override</apigee.options>
-				<apigee.override.delay>5</apigee.override.delay>
-				<api.northbound.domain>${org}-prod.apigee.net</api.northbound.domain>
-				<api.testtag>~@wip,~@mock</api.testtag>
-				<apigee.apitype>${apitype}</apigee.apitype>
-			</properties>
-		</profile>
-	</profiles>
-	
-	
     <!-- Since Maven 3.0.3, for two plugins bound to the same phase, the order 
          of execution is the same as the order in which you define them. -->
     <build>
         <plugins>
-            <!-- copy the full apiproxy folder to target folder -->
-			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.6</version>
-				<executions>
-					<execution>
-						<id>copy-resources</id>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<overwrite>true</overwrite>
-							<resources>
-								<resource>
-									<!--source -->
-									<directory>${project.root.dir}</directory>
-									<filtering>true</filtering>
-									<includes>
-										<include>apiproxy/**</include>
-										<include>test/integration/**</include>
-									</includes>
-								</resource>
-							</resources>
-							<!--target -->
-							<outputDirectory>${target.root.dir}</outputDirectory>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-            <plugin>
+	<plugin>
                 <groupId>com.apigee.edge.config</groupId>
                 <artifactId>apigee-config-maven-plugin</artifactId>
-                <version>1.2.1</version>
+                <version>1.2.2</version>
                 <executions>
                     <execution>
+                        <id>create-config-cache</id>
+                        <phase>install</phase>                        
+                        <goals>
+                            <goal>caches</goal>
+                        </goals>
+                    </execution>
+                    <execution>
                         <id>create-config-targetserver</id>
-                        <phase>verify</phase>                        
+                        <phase>install</phase>                        
                         <goals>
                             <goal>targetservers</goal>
                         </goals>
@@ -131,10 +57,10 @@
                         </goals>
                     </execution>
                     <execution>
-                        <id>create-config-flowhook</id>
+                        <id>create-config-resourcefiles</id>
                         <phase>install</phase>                        
                         <goals>
-                            <goal>flowhooks</goal>
+                            <goal>resourcefiles</goal>
                         </goals>
                     </execution>
                     <execution>
@@ -160,93 +86,68 @@
                     </execution>
                 </executions>
             </plugin>            
-<plugin>
-				<groupId>io.apigee.build-tools.enterprise4g</groupId>
-				<artifactId>apigee-edge-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>configure-bundle-step</id>
-						<phase>package</phase>
-						<goals>
-							<goal>configure</goal>
-						</goals>
-					</execution>
-					<!--deploy bundle -->
-					<execution>
-						<id>deploy-bundle-step</id>
-						<phase>install</phase>
-						<goals>
-							<goal>deploy</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<version>1.3.2</version>
-				<executions>
-					<!-- npm install -->
-					<!-- <execution> 
-						<id>npm-install</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>exec</goal>
-						</goals>
-						<configuration>
-							<executable>npm</executable>
-							<commandlineArgs>
-								install
-							</commandlineArgs>
-						</configuration>
-					</execution> -->
-					<!-- run unit tests -->
-					<!-- <execution>
-						<id>unit</id>
-						<phase>test</phase>
-						<goals>
-							<goal>exec</goal>
-						</goals>
-						<configuration>
-							<executable>node</executable>
-							<commandlineArgs>
-								node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha test/unit
-							</commandlineArgs>
-						</configuration>
-					</execution> -->
-					<!-- run apigeelint -->
-					 <!-- <execution>
-						<id>apigeelint</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>exec</goal>
-						</goals>
-						<configuration>
-							<executable>node</executable>
-							<commandlineArgs>
-								./node_modules/apigeelint/cli.js -s ./apiproxy -f table.js
-							</commandlineArgs>
-						</configuration>
-					</execution> -->
-					<!-- run integration tests -->
-					<execution>
-						<id>integration</id>
-						<phase>install</phase>
-						<goals>
-							<goal>exec</goal>
-						</goals>
-						<configuration>
-							<executable>node</executable>
-							<commandlineArgs>
-								./node_modules/cucumber/bin/cucumber.js target/test/integration/features --tags ${api.testtag} --format json:target/reports.json
-							</commandlineArgs>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>test</id>
+            <properties>
+			    <org>fiserv</org>
+                <apigee.profile>lab</apigee.profile>
+                <apigee.hosturl>${hosturl}</apigee.hosturl>
+                <apigee.apiversion>v1</apigee.apiversion>
+                <apigee.org>${org}</apigee.org>
+                <apigee.env>${env}</apigee.env>
+                <apigee.username>${username}</apigee.username>
+                <apigee.password>${password}</apigee.password>
+                <apigee.authtype>basic</apigee.authtype> <!-- optional: oauth|basic(default) -->
+                <apigee.tokenurl>https://login.apigee.com/oauth/token</apigee.tokenurl> <!-- optional: oauth -->
+                <apigee.mfatoken>${mfatoken}</apigee.mfatoken> <!-- optional: mfa -->
+                <apigee.clientid>${clientId}</apigee.clientid> <!-- optional: Oauth Client Id - Default is edgecli-->
+                <apigee.clientsecret>${clientSecret}</apigee.clientsecret> <!-- optional: Oauth Client Secret Default is edgeclisecret-->
+                <apigee.bearer>${bearer}</apigee.bearer> <!-- optional: Bearer token override -->
+                <apigee.refresh>${refresh}</apigee.refresh> <!-- optional: Refresh token override -->
+            </properties>
+        </profile>
+        <profile>
+            <id>lab3dev</id>
+            <properties>
+                <apigee.profile>lab3dev</apigee.profile>
+                <apigee.hosturl>https://api.enterprise.apigee.com</apigee.hosturl>
+                <apigee.apiversion>v1</apigee.apiversion>
+                <apigee.org>${org}</apigee.org>
+                <apigee.env>${env}</apigee.env>
+                <apigee.username>${username}</apigee.username>
+                <apigee.password>${password}</apigee.password>
+                <apigee.authtype>oauth</apigee.authtype> <!-- optional: oauth|basic(default) -->
+                <apigee.tokenurl>https://login.apigee.com/oauth/token</apigee.tokenurl> <!-- optional: oauth -->
+                <apigee.mfatoken>${mfatoken}</apigee.mfatoken> <!-- optional: mfa -->
+                <apigee.clientid>${clientId}</apigee.clientid> <!-- optional: Oauth Client Id - Default is edgecli-->
+                <apigee.clientsecret>${clientSecret}</apigee.clientsecret> <!-- optional: Oauth Client Secret Default is edgeclisecret-->
+                <apigee.bearer>${bearer}</apigee.bearer> <!-- optional: Bearer token override -->
+                <apigee.refresh>${refresh}</apigee.refresh> <!-- optional: Refresh token override -->
+            </properties>
+        </profile>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <apigee.profile>dev</apigee.profile>
+                <apigee.hosturl>https://api.enterprise.apigee.com</apigee.hosturl>
+                <apigee.apiversion>v1</apigee.apiversion>
+                <apigee.org>${org}</apigee.org>
+                <apigee.env>${env}</apigee.env>
+                <apigee.username>${username}</apigee.username>
+                <apigee.password>${password}</apigee.password>
+                <apigee.authtype>oauth</apigee.authtype> <!-- optional: oauth|basic(default) -->
+                <apigee.tokenurl>https://login.apigee.com/oauth/token</apigee.tokenurl> <!-- optional: oauth -->
+                <apigee.mfatoken>${mfatoken}</apigee.mfatoken> <!-- optional: mfa -->
+                <apigee.clientid>${clientId}</apigee.clientid> <!-- optional: Oauth Client Id - Default is edgecli-->
+                <apigee.clientsecret>${clientSecret}</apigee.clientsecret> <!-- optional: Oauth Client Secret Default is edgeclisecret-->
+                <apigee.bearer>${bearer}</apigee.bearer> <!-- optional: Bearer token override -->
+                <apigee.refresh>${refresh}</apigee.refresh> <!-- optional: Refresh token override -->
+            </properties>
+        </profile>
+    </profiles>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
