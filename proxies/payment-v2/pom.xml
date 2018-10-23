@@ -204,7 +204,7 @@
 						</configuration>
 					</execution> -->
 					<!-- run unit tests -->
-					<execution>
+					<!-- <execution>
 						<id>unit</id>
 						<phase>test</phase>
 						<goals>
@@ -216,7 +216,7 @@
 								node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha test/unit
 							</commandlineArgs>
 						</configuration>
-					</execution>
+					</execution> -->
 					<!-- run apigeelint -->
 					 <!-- <execution>
 						<id>apigeelint</id>
