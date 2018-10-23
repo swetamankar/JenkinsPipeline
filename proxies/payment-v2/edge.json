@@ -2,7 +2,7 @@
     "version": "1.0",
     "envConfig": {
         "lab": {
-          "targetServers": [
+          "targetservers": [
               {
                 "name" : "mock",
                 "host" : "amer-poc12-test",
