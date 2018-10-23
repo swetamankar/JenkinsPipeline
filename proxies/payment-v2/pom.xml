@@ -90,7 +90,7 @@
     </build>
     <profiles>
         <profile>
-            <id>test</id>
+            <id>lab</id>
             <properties>
 			    <org>fiserv</org>
                 <apigee.profile>lab</apigee.profile>
