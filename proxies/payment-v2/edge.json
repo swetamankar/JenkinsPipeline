@@ -19,7 +19,7 @@
           ],
           "kvms": [
             {
-                "name": "spikeArrestLimitMap",
+                "name": "spikeArrestLimitcheck",
                 "entry": [
                     {
                         "name": "payment-v2",
